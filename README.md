@@ -1,49 +1,63 @@
-# 3 SUM
+# BINARY TREE LEVEL ORDER TRAVERSAL II
 
-Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.
+Given a binary tree, return the bottom-up level order traversal of its nodes' values. (ie, from left to right, level by level from leaf to root).
 
-### Note:
+For example:
+Given binary tree [3,9,20,null,null,15,7],
 
-The solution set must not contain duplicate triplets.
-
-### Example:
 <pre>
-Given array nums = [-1, 0, 1, 2, -1, -4],
+    3
+   / \
+  9  20
+    /  \
+   15   7
 
-A solution set is:
+</pre>
+
+return its bottom-up level order traversal as:
+<pre>
 [
-  [-1, 0, 1],
-  [-1, -1, 2]
+  [15,7],
+  [9,20],
+  [3]
 ]
 </pre>
+
 
 ### Solution:
 
 ```cpp
 
-
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
 public:
-    vector<vector<int>> threeSum(vector<int>& nums) {
-        sort(nums.begin(),nums.end());
-        int n = nums.size();
-        vector<vector<int>> ans;
-        for(int i=0;i<n-2;i++){
-               if(i>0 && (nums[i]==nums[i-1]) )continue;
-               int l=i+1, r= n-1;
-               while(l<r){
-                   int sum =nums[i]+nums[l]+nums[r];
-                   if(sum<0) l++;
-                   else if(sum>0)r--;
-                   else {
-                       ans.push_back(vector<int>{nums[i],nums[l],nums[r]});
-                       while(l+1<r && nums[l]==nums[l+1])l++;
-                       while(l<r-1 && nums[r]==nums[r-1]) r--;
-                       l++; r--;
-                   }
-               }
-        }
-        return ans;
+    int depth(TreeNode* root){
+        if(root==NULL) return 0;
+        return max(depth(root->left),depth(root->right))+1;
+    }
+    
+    void level(vector<vector<int>> &res,TreeNode*node,int h){
+        if(node==NULL) return;
+        res[h].push_back(node->val);
+        level(res,node->left,h-1);
+        level(res,node->right,h-1);
+    }
+    
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+        int h=depth(root);
+        vector<vector<int>> res(h,vector<int> {});   
+        level(res,root,h-1);   
+        return res;
     }
 };
 
